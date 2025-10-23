@@ -1,0 +1,5 @@
+<form method="post" action="/customers/<%= c.id %>">
+  <p><label>名前 <input name="name" value="<%= c.name %>" required></label></p>
+  <p><label>メール <input name="email" value="<%= c.email %>" required></label></p>
+  <p><button type="submit">更新</button></p>
+</form>
