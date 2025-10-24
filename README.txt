@@ -9,16 +9,19 @@ npm run build
 # EJSを実行ディレクトリに同梱
 cp -r src/views dist/views
 cd ..
-docker compose up -d --build    # --buildが必要なのは変更があったときのみ。通常は docker compose up -d でOK。
+docker compose build
+
+# 3) Docker起動
+docker compose up -d
 # 起動後: CUR = http://localhost:3001, NEW = http://localhost:3002
 
-# 3) Playwright 依存の用意（テスト直下）
+# 4) Playwright 依存の用意（テスト直下）（初回のみ）
 npm -v || brew install node # Nodeがなければ
 npm init -y
 npm i -D @playwright/test pg
 npx playwright install
 
-# 4) テスト実行
+# 5) テスト実行
 npx playwright test tests/example-view.spec.ts
 npx playwright test tests/example-crud.spec.ts
 npx playwright show-report
