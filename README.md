@@ -39,8 +39,7 @@ docker compose down -v # DBも消す場合
 
 ### 初回インストール
 ```
-npm init -y
-npm install -D @playwright/test pg
+npm install
 npx playwright install
 ```
 

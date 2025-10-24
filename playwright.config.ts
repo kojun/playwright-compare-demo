@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
-  testDir: '.',
+  reporter: [['html', { open: 'never' }]],
+  testDir: 'tests',
   use: {
     headless: true,
     screenshot: 'only-on-failure',
