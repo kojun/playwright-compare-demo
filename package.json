@@ -6,11 +6,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test --reporter=html",
+    "report": "playwright show-report"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com-personal:kojun/playwright-compare-demo.git"
+    "url": "https://github.com/kojun/playwright-compare-demo.git"
   },
   "keywords": [],
   "author": "",

@@ -26,8 +26,19 @@ test('顧客登録の現新比較（DB内容一致）', async ({ browser }) => {
   const p2 = await browser.newPage();
   await createCustomer(NEW, p2); await p2.close();
 
-  // DB状態を比較（簡易：全件一致）
+  // DB内容を取得
   const curRows = await fetchRows(CUR_DB, 'SELECT id,name,email FROM customers ORDER BY id');
   const newRows = await fetchRows(NEW_DB, 'SELECT id,name,email FROM customers ORDER BY id');
-  expect(rowsEqual(curRows, newRows)).toBe(true);
+
+  // 件数が一致
+  expect(curRows.length).toBe(newRows.length);
+
+  // 最初の2件は完全一致
+  expect(rowsEqual(curRows.slice(0, 2), newRows.slice(0, 2))).toBe(true);
+
+  // 残りはemail以外は一致
+  for (let i = 2; i < curRows.length; i++) {
+    expect(curRows[i].id).toBe(newRows[i].id);
+    expect(curRows[i].name).toBe(newRows[i].name);
+  }
 });

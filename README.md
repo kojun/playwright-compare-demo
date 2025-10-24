@@ -45,7 +45,6 @@ npx playwright install
 
 ### テスト実行（例）
 ```
-npx playwright test tests/example-view.spec.ts
-npx playwright test tests/example-crud.spec.ts
-npx playwright show-report
+npm test
+npm run report
 ```
