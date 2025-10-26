@@ -15,11 +15,7 @@
 ### ビルド
 サーバ側のコードを修正した場合はここから実行。
 ```
-cd server
-npm run build
-# EJSを実行ディレクトリに同梱
-cp -r src/views dist/views
-cd ..
+(cd server; npm run build)
 docker compose build
 ```
 
