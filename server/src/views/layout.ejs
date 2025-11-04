@@ -14,10 +14,24 @@
 </head>
 <body>
 <header>
-  <h1><%= appName %> / Customers</h1>
-  <nav>
-    <a href="/customers">一覧</a> | <a href="/customers/new">新規</a>
-  </nav>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1><%= appName %> / Customers</h1>
+      <% if (typeof username !== 'undefined') { %>
+        <nav>
+          <a href="/customers">一覧</a> | <a href="/customers/new">新規</a>
+        </nav>
+      <% } %>
+    </div>
+    <% if (typeof username !== 'undefined') { %>
+      <div style="text-align: right;">
+        <span>ログイン中: <%= username %></span><br>
+        <form method="post" action="/logout" style="display: inline;">
+          <button type="submit" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.9em;">ログアウト</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
 </header>
 <%- include('flash') %>
 <main>

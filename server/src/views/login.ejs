@@ -1,0 +1,29 @@
+<div style="max-width: 400px; margin: 2rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px;">
+  <h2>ログイン</h2>
+  
+  <% if (error) { %>
+    <div style="color: red; margin-bottom: 1rem; padding: 0.5rem; background: #ffe6e6; border: 1px solid #ffcccc; border-radius: 4px;">
+      <%= error %>
+    </div>
+  <% } %>
+  
+  <form method="post" action="/login">
+    <div style="margin-bottom: 1rem;">
+      <label for="username" style="display: block; margin-bottom: 0.5rem;">ユーザー名:</label>
+      <input type="text" id="username" name="username" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+    
+    <div style="margin-bottom: 1rem;">
+      <label for="password" style="display: block; margin-bottom: 0.5rem;">パスワード:</label>
+      <input type="password" id="password" name="password" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+    
+    <button type="submit" style="width: 100%; padding: 0.75rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">ログイン</button>
+  </form>
+  
+  <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px; font-size: 0.9em; color: #666;">
+    <strong>デモ用ログイン情報:</strong><br>
+    ユーザー名: admin<br>
+    パスワード: Demo2024!
+  </div>
+</div>

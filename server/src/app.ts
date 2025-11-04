@@ -1,10 +1,20 @@
 import express from 'express';
 import path from 'path';
+import session from 'express-session';
 import router from './routes';
 import expressLayouts from 'express-ejs-layouts';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+
+// Session setup
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
