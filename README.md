@@ -29,7 +29,7 @@
 コンテナ内でapk/npmを走らせると、社内環境ではnetskopeの証明書問題に邪魔されるため、ローカルでNode Packageを用意し、コンテナにそれを読み込ませる。
 
 ```
-(cd server: npm install)
+(cd server; npm install)
 ```
 
 ### ビルド
@@ -85,7 +85,20 @@ npm run test:new
 SCENARIO=login-only npm run test:current
 ```
 
-#### 3. 従来のテスト実行
+#### 3. 実行結果の管理
+単一環境テスト実行時は、結果が自動的にJSONファイルとして保存されます：
+```bash
+# 実行結果一覧を表示
+npm run results:list
+
+# 最新の実行結果を表示（jq必要）
+npm run results:latest
+
+# 実行結果をクリア
+npm run results:clean
+```
+
+#### 4. 従来のテスト実行
 ```bash
 npm test
 npm run report

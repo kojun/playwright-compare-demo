@@ -45,3 +45,7 @@ trace.zip
 docker-data/
 tmp/
 
+# =========================
+# DSL Engine
+# =========================
+test-execution-results/

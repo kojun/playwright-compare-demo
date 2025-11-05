@@ -13,6 +13,9 @@
     "test:compare": "COMPARISON_MODE=comparison playwright test dsl-test-runner.spec.ts --reporter=line",
     "test:scenario": "SCENARIO=${SCENARIO:-scenario1} COMPARISON_MODE=comparison playwright test dsl-test-runner.spec.ts --reporter=line",
     "scenarios:list": "ls config/scenarios/*.yaml | xargs -I {} basename {} .yaml",
+    "results:list": "ls -la test-execution-results/single-runs/ | grep -v '^total' | tail -n +2",
+    "results:latest": "ls -t test-execution-results/single-runs/*.json | head -1 | xargs cat | jq .",
+    "results:clean": "rm -rf test-execution-results/single-runs/*",
     "report": "playwright show-report"
   },
   "repository": {
