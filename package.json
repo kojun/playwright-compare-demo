@@ -7,10 +7,12 @@
   },
   "scripts": {
     "test": "playwright test --reporter=html",
-    "test:dsl": "playwright test scenario1-dsl.spec.ts --reporter=line",
-    "test:current": "TEST_TARGET=current COMPARISON_MODE=single playwright test scenario1-dsl.spec.ts --reporter=line",
-    "test:new": "TEST_TARGET=new COMPARISON_MODE=single playwright test scenario1-dsl.spec.ts --reporter=line",
-    "test:compare": "COMPARISON_MODE=comparison playwright test scenario1-dsl.spec.ts --reporter=line",
+    "test:dsl": "playwright test dsl-test-runner.spec.ts --reporter=line",
+    "test:current": "TEST_TARGET=current COMPARISON_MODE=single playwright test dsl-test-runner.spec.ts --reporter=line",
+    "test:new": "TEST_TARGET=new COMPARISON_MODE=single playwright test dsl-test-runner.spec.ts --reporter=line",
+    "test:compare": "COMPARISON_MODE=comparison playwright test dsl-test-runner.spec.ts --reporter=line",
+    "test:scenario": "SCENARIO=${SCENARIO:-scenario1} COMPARISON_MODE=comparison playwright test dsl-test-runner.spec.ts --reporter=line",
+    "scenarios:list": "ls config/scenarios/*.yaml | xargs -I {} basename {} .yaml",
     "report": "playwright show-report"
   },
   "repository": {

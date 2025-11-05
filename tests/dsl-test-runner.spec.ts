@@ -1,4 +1,4 @@
-// tests/scenario1-dsl.spec.ts
+// tests/dsl-test-runner.spec.ts
 import { test, expect, Browser } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -8,7 +8,7 @@ import { DSLEngine } from '../framework/dsl-engine';
 import { ComparisonEngine } from '../framework/comparison-engine';
 
 test.describe('DSL-based Scenario Testing', () => {
-  test('Scenario1: Login and Create Customer (DSL-driven)', async ({ browser }) => {
+  test('Generic DSL Scenario Runner', async ({ browser }) => {
     // フレームワークの初期化
     const environmentManager = new EnvironmentManager();
     const selectorDictionary = JSON.parse(
@@ -18,9 +18,31 @@ test.describe('DSL-based Scenario Testing', () => {
     const dslEngine = new DSLEngine(selectorEngine, environmentManager);
     const comparisonEngine = new ComparisonEngine();
 
-    // シナリオの読み込み
-    const scenarioPath = path.join(process.cwd(), 'config', 'scenarios', 'scenario1.yaml');
+    // 環境変数からシナリオ名を取得（デフォルト: scenario1）
+    const scenarioName = process.env.SCENARIO || 'scenario1';
+    const scenarioPath = path.join(process.cwd(), 'config', 'scenarios', `${scenarioName}.yaml`);
+    
+    // シナリオファイルの存在確認
+    if (!fs.existsSync(scenarioPath)) {
+      throw new Error(`Scenario file not found: ${scenarioPath}. Available scenarios: ${getAvailableScenarios().join(', ')}`);
+    }
+    
     const scenario = dslEngine.loadScenario(scenarioPath);
+    console.log(`📋 Running scenario: ${scenarioName}`);
+    
+    /**
+     * 利用可能なシナリオファイル一覧を取得
+     */
+    function getAvailableScenarios(): string[] {
+      const scenariosDir = path.join(process.cwd(), 'config', 'scenarios');
+      try {
+        return fs.readdirSync(scenariosDir)
+          .filter(file => file.endsWith('.yaml'))
+          .map(file => file.replace('.yaml', ''));
+      } catch {
+        return [];
+      }
+    }
 
     console.log(`🎯 Test Mode: ${environmentManager.getTestMode()}`);
 

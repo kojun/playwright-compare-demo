@@ -64,17 +64,25 @@ npx playwright install
 #### 1. 現新比較テスト（推奨）
 完全に同一のコードで現行・新システムの両方を実行し、結果を比較します：
 ```bash
+# デフォルトシナリオ（scenario1）で比較
 npm run test:compare
+
+# 特定のシナリオで比較
+SCENARIO=login-only npm run test:compare
+SCENARIO=scenario1 npm run test:compare
 ```
 
 #### 2. 単一環境でのテスト
 特定の環境のみでテストを実行する場合：
 ```bash
-# 現行システムのみ
+# 現行システムのみ（デフォルトシナリオ）
 npm run test:current
 
-# 新システムのみ  
+# 新システムのみ（デフォルトシナリオ）
 npm run test:new
+
+# 特定のシナリオで現行システムのみ
+SCENARIO=login-only npm run test:current
 ```
 
 #### 3. 従来のテスト実行
@@ -97,7 +105,7 @@ npm run report
 - `framework/comparison-engine.ts`: 比較・レポート生成
 
 #### テストファイル
-- `tests/scenario1-dsl.spec.ts`: DSLベースの現新比較テスト
+- `tests/dsl-test-runner.spec.ts`: 汎用DSLテストランナー（環境変数SCENARIOでシナリオを指定）
 
 ### DSLシナリオの記述方法
 
@@ -217,7 +225,7 @@ Error: connect ECONNREFUSED 127.0.0.1:5433
 │   ├── dsl-engine.ts
 │   └── comparison-engine.ts
 ├── 📁 tests/              # テストスクリプト
-│   ├── scenario1-dsl.spec.ts
+│   ├── dsl-test-runner.spec.ts  # 汎用DSLテストランナー
 │   ├── compare.utils.ts
 │   ├── db.utils.ts
 │   └── test-setup.utils.ts

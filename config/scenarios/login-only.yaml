@@ -1,0 +1,42 @@
+# ログインのみのシンプルなシナリオ
+
+name: "login-only"
+description: "ログイン機能のみをテストするシナリオ"
+
+setup:
+  - action: "resetDatabase"
+
+steps:
+  - name: "login"
+    description: "システムにログインする"
+    actions:
+      - action: "navigate"
+        target: "/"
+      - action: "fill"
+        selector: "login.username"
+        value: "${credentials.admin.username}"
+      - action: "fill"
+        selector: "login.password"
+        value: "${credentials.admin.password}"
+      - action: "click"
+        selector: "login.loginButton"
+
+  - name: "captureAfterLogin"
+    description: "ログイン後の画面をキャプチャ"
+    actions:
+      - action: "navigate"
+        target: "/customers"
+      - action: "captureHTML"
+        id: "afterLogin"
+
+comparisons:
+  - name: "loginHTMLComparison"
+    description: "ログイン後画面のHTML比較"
+    type: "html"
+    source: "afterLogin"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "title>CUR|title>NEW"
+      - "h1>CUR|h1>NEW"
+
+testData: {}
