@@ -1,0 +1,32 @@
+{
+  "environments": {
+    "current": {
+      "name": "CUR",
+      "baseUrl": "http://localhost:3001",
+      "database": {
+        "host": "localhost",
+        "port": 5433,
+        "user": "app",
+        "password": "app",
+        "database": "appdb"
+      }
+    },
+    "new": {
+      "name": "NEW", 
+      "baseUrl": "http://localhost:3002",
+      "database": {
+        "host": "localhost",
+        "port": 5434,
+        "user": "app",
+        "password": "app",
+        "database": "appdb"
+      }
+    }
+  },
+  "credentials": {
+    "admin": {
+      "username": "admin",
+      "password": "Demo2024!"
+    }
+  }
+}

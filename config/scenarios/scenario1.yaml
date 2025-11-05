@@ -1,0 +1,93 @@
+# シナリオ1: ログイン→顧客追加→一覧表示の現新比較
+
+name: "scenario1-login-and-create"
+description: "ログインから顧客追加までの一連の流れを現新で比較する"
+
+setup:
+  - action: "resetDatabase"
+    description: "データベースを初期状態にリセット"
+
+steps:
+  - name: "login"
+    description: "システムにログインする"
+    actions:
+      - action: "navigate"
+        target: "/"
+      - action: "fill"
+        selector: "login.username"
+        value: "${credentials.admin.username}"
+      - action: "fill"
+        selector: "login.password"
+        value: "${credentials.admin.password}"
+      - action: "click"
+        selector: "login.loginButton"
+
+  - name: "captureInitialState"
+    description: "初期状態のHTML and DB state"
+    actions:
+      - action: "navigate"
+        target: "/customers"
+      - action: "captureHTML"
+        id: "initialList"
+      - action: "captureDatabase"
+        id: "initialDB"
+        query: "SELECT id, name, email FROM customers ORDER BY id"
+
+  - name: "createCustomer"
+    description: "新しい顧客を作成する"
+    actions:
+      - action: "click"
+        selector: "customers.list.newCustomerLink"
+      - action: "fill"
+        selector: "customers.form.name"
+        value: "${testData.customer.name}"
+      - action: "fill"
+        selector: "customers.form.email"
+        value: "${testData.customer.email}"
+      - action: "click"
+        selector: "customers.form.submitButton"
+
+  - name: "captureFinalState"
+    description: "最終状態のHTML and DB state"
+    actions:
+      - action: "captureHTML"
+        id: "finalList"
+      - action: "captureDatabase"
+        id: "finalDB"
+        query: "SELECT id, name, email FROM customers ORDER BY id"
+
+comparisons:
+  - name: "initialHTMLComparison"
+    description: "初期一覧画面のHTML比較"
+    type: "html"
+    source: "initialList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "title>CUR|title>NEW"
+      - "h1>CUR|h1>NEW"
+
+  - name: "finalHTMLComparison"
+    description: "最終一覧画面のHTML比較"
+    type: "html"
+    source: "finalList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "title>CUR|title>NEW"
+      - "h1>CUR|h1>NEW"
+      - "\\d{13}"
+      - "test_\\d+@example\\.com"
+
+  - name: "initialDBComparison"
+    description: "初期DB状態の比較"
+    type: "database"
+    source: "initialDB"
+
+  - name: "finalDBComparison"
+    description: "最終DB状態の比較"
+    type: "database"
+    source: "finalDB"
+
+testData:
+  customer:
+    name: "テスト 太郎 DSL"
+    email: "test_dsl@example.com"

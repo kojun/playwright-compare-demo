@@ -1,0 +1,47 @@
+{
+  "selectors": {
+    "login": {
+      "username": [
+        { "type": "role", "role": "textbox", "name": "ユーザー名" },
+        { "type": "label", "text": "ユーザー名" },
+        { "type": "css", "selector": "input[name=\"username\"]" }
+      ],
+      "password": [
+        { "type": "role", "role": "textbox", "name": "パスワード" },
+        { "type": "label", "text": "パスワード" },
+        { "type": "css", "selector": "input[name=\"password\"]" }
+      ],
+      "loginButton": [
+        { "type": "role", "role": "button", "name": "ログイン" },
+        { "type": "css", "selector": "button[type=\"submit\"]" },
+        { "type": "text", "text": "ログイン" }
+      ]
+    },
+    "customers": {
+      "list": {
+        "newCustomerLink": [
+          { "type": "role", "role": "link", "name": "新規作成" },
+          { "type": "css", "selector": "a[href*=\"/customers/new\"]" },
+          { "type": "text", "text": "新規作成" }
+        ]
+      },
+      "form": {
+        "name": [
+          { "type": "role", "role": "textbox", "name": "名前" },
+          { "type": "label", "text": "名前" },
+          { "type": "css", "selector": "input[name=\"name\"]" }
+        ],
+        "email": [
+          { "type": "role", "role": "textbox", "name": "メール" },
+          { "type": "label", "text": "メール" },
+          { "type": "css", "selector": "input[name=\"email\"]" }
+        ],
+        "submitButton": [
+          { "type": "role", "role": "button", "name": "登録" },
+          { "type": "css", "selector": "form button[type=\"submit\"]" },
+          { "type": "text", "text": "登録" }
+        ]
+      }
+    }
+  }
+}
