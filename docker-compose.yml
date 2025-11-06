@@ -1,0 +1,60 @@
+services:
+  cur-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: appdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - cur_db_data:/var/lib/postgresql/data
+      - ./server/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  new-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: appdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - new_db_data:/var/lib/postgresql/data
+      - ./server/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  cur-app:
+    build: ./server
+    environment:
+      APP_NAME: CUR
+      PORT: 3000
+      DB_HOST: cur-db
+      DB_PORT: 5432
+      DB_USER: app
+      DB_PASSWORD: app
+      DB_NAME: appdb
+      BASE_PATH: ""           # 例: /cur にしたい場合は変更
+    depends_on:
+      - cur-db
+    ports:
+      - "3001:3000"
+
+  new-app:
+    build: ./server
+    environment:
+      APP_NAME: NEW
+      PORT: 3000
+      DB_HOST: new-db
+      DB_PORT: 5432
+      DB_USER: app
+      DB_PASSWORD: app
+      DB_NAME: appdb
+      BASE_PATH: ""
+    depends_on:
+      - new-db
+    ports:
+      - "3002:3000"
+
+volumes:
+  cur_db_data:
+  new_db_data:

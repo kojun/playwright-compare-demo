@@ -39,8 +39,6 @@ trace.zip
 # =========================
 # Docker / Compose
 # =========================
-**/docker-compose*.yml
-!docker-compose.yml        # ルートのcomposeは追跡対象にしたい場合コメント解除
 docker-data/
 tmp/
 
