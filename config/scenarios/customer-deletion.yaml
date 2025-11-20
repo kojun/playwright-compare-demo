@@ -1,0 +1,111 @@
+name: "customer-deletion-flow"
+description: "顧客削除機能のテスト（確認ダイアログ、削除処理、キャンセル処理）"
+
+setup:
+  - action: "resetDatabase"
+
+steps:
+  - name: "login"
+    description: "管理者でログイン"
+    actions:
+      - action: "navigate"
+        target: "/"
+      - action: "fill"
+        selector: "login.username"
+        value: "${credentials.admin.username}"
+      - action: "fill"
+        selector: "login.password"
+        value: "${credentials.admin.password}"
+      - action: "click"
+        selector: "login.loginButton"
+
+  - name: "captureBeforeDeletion"
+    description: "削除前の状態を記録"
+    actions:
+      - action: "captureHTML"
+        id: "beforeDeletionList"
+      - action: "captureDatabase"
+        id: "beforeDeletionCustomers"
+        query: "SELECT COUNT(*) as count FROM customers"
+
+  - name: "testDeletionCancel"
+    description: "削除キャンセル機能をテスト"
+    actions:
+      - action: "click"
+        selector: "customers.list.deleteButton"
+        expectDialog: true
+        accept: false
+        description: "削除ボタンをクリックしてダイアログをキャンセル"
+
+  - name: "captureAfterCancel"
+    description: "キャンセル後の状態を記録"
+    actions:
+      - action: "captureHTML"
+        id: "afterCancelList"
+      - action: "captureDatabase"
+        id: "afterCancelCustomers"
+        query: "SELECT COUNT(*) as count FROM customers"
+
+  - name: "performActualDeletion"
+    description: "実際の削除を実行"
+    actions:
+      - action: "click"
+        selector: "customers.list.deleteButton"
+        expectDialog: true
+        accept: true
+        description: "削除ボタンをクリックしてダイアログを承認"
+
+  - name: "captureAfterDeletion"
+    description: "削除後の状態を記録"
+    actions:
+      - action: "captureHTML"
+        id: "afterDeletionList"
+      - action: "captureDatabase"
+        id: "afterDeletionCustomers"
+        query: "SELECT COUNT(*) as count FROM customers"
+
+comparisons:
+  - name: "beforeDeletionComparison"
+    description: "削除前のデータベース状態"
+    type: "database"
+    source: "beforeDeletionCustomers"
+
+  - name: "afterCancelComparison"
+    description: "キャンセル後のデータベース状態"
+    type: "database"
+    source: "afterCancelCustomers"
+
+  - name: "afterDeletionComparison"
+    description: "削除後のデータベース状態"
+    type: "database"
+    source: "afterDeletionCustomers"
+
+  - name: "beforeDeletionListComparison"
+    description: "削除前の一覧画面"
+    type: "html"
+    source: "beforeDeletionList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+  - name: "afterCancelListComparison"
+    description: "キャンセル後の一覧画面"
+    type: "html"
+    source: "afterCancelList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+  - name: "afterDeletionListComparison"
+    description: "削除後の一覧画面"
+    type: "html"
+    source: "afterDeletionList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+testData:
+  credentials:
+    admin:
+      username: "admin"
+      password: "Demo2024!"

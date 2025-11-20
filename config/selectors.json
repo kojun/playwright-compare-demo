@@ -23,6 +23,16 @@
           { "type": "role", "role": "link", "name": "新規作成" },
           { "type": "css", "selector": "a[href*=\"/customers/new\"]" },
           { "type": "text", "text": "新規作成" }
+        ],
+        "editButton": [
+          { "type": "css", "selector": "tbody tr:first-child a[href*=\"/edit\"]" },
+          { "type": "css", "selector": "tr:nth-child(1) a[href*=\"/edit\"]" },
+          { "type": "css", "selector": "a[href=\"/customers/1/edit\"]" }
+        ],
+        "deleteButton": [
+          { "type": "css", "selector": "tbody tr:last-child form[action*=\"/delete\"] button[type=\"submit\"]" },
+          { "type": "css", "selector": "form[action*=\"/delete\"] button[type=\"submit\"]:last-of-type" },
+          { "type": "role", "role": "button", "name": "削除" }
         ]
       },
       "form": {
@@ -40,6 +50,11 @@
           { "type": "role", "role": "button", "name": "登録" },
           { "type": "css", "selector": "form button[type=\"submit\"]" },
           { "type": "text", "text": "登録" }
+        ],
+        "updateButton": [
+          { "type": "role", "role": "button", "name": "更新" },
+          { "type": "css", "selector": "form button[type=\"submit\"]" },
+          { "type": "text", "text": "更新" }
         ]
       }
     }

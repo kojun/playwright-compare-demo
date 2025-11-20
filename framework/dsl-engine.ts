@@ -15,6 +15,8 @@ export interface TestAction {
   id?: string;
   query?: string;
   description?: string;
+  expectDialog?: boolean;
+  accept?: boolean;
 }
 
 export interface TestStep {
@@ -114,6 +116,25 @@ export class DSLEngine {
 
       case 'click':
         if (!action.selector) throw new Error('selector is required for click action');
+        
+        // ダイアログが期待される場合のハンドラー設定
+        if (action.expectDialog) {
+          page.once('dialog', async dialog => {
+            console.log(`Expected dialog appeared: ${dialog.message()}`);
+            if (action.accept !== undefined) {
+              if (action.accept) {
+                console.log('Accepting dialog');
+                await dialog.accept();
+              } else {
+                console.log('Dismissing dialog');
+                await dialog.dismiss();
+              }
+            } else {
+              await dialog.accept(); // デフォルト受諾
+            }
+          });
+        }
+        
         const clickLocator = await this.selectorEngine.getLocator(page, action.selector);
         await clickLocator.click();
         // クリック後に少し待機
@@ -143,6 +164,31 @@ export class DSLEngine {
 
       case 'resetDatabase':
         await this.resetCustomersToInitialState(environment.database);
+        break;
+
+      case 'clear':
+        if (!action.selector) throw new Error('selector is required for clear action');
+        const clearLocator = await this.selectorEngine.getLocator(page, action.selector);
+        await clearLocator.clear();
+        break;
+
+      case 'handleDialog':
+        // ダイアログハンドラーを設定
+        page.once('dialog', async dialog => {
+          console.log(`Dialog appeared: ${dialog.message()}`);
+          if (action.accept !== undefined) {
+            if (action.accept) {
+              console.log('Accepting dialog');
+              await dialog.accept();
+            } else {
+              console.log('Dismissing dialog');
+              await dialog.dismiss();
+            }
+          } else {
+            // デフォルトは受諾
+            await dialog.accept();
+          }
+        });
         break;
 
       default:

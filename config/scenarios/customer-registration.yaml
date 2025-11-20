@@ -1,0 +1,111 @@
+name: "customer-registration-complete"
+description: "顧客登録の全フローを網羅的にテストする（バリデーション、成功ケース、エラーハンドリング）"
+
+setup:
+  - action: "resetDatabase"
+
+steps:
+  - name: "login"
+    description: "管理者でログイン"
+    actions:
+      - action: "navigate"
+        target: "/"
+      - action: "fill"
+        selector: "login.username"
+        value: "${credentials.admin.username}"
+      - action: "fill"
+        selector: "login.password"  
+        value: "${credentials.admin.password}"
+      - action: "click"
+        selector: "login.loginButton"
+
+  - name: "captureInitialCustomerList"
+    description: "初期状態の顧客一覧を記録"
+    actions:
+      - action: "captureHTML"
+        id: "initialCustomerList"
+      - action: "captureDatabase"
+        id: "initialCustomers"
+        query: "SELECT * FROM customers ORDER BY id"
+
+  - name: "navigateToNewCustomerForm"
+    description: "新規顧客作成フォームに遷移"
+    actions:
+      - action: "click"
+        selector: "customers.list.newCustomerLink"
+      - action: "waitForNavigation"
+
+  - name: "testFormValidation"
+    description: "フォームバリデーションをテスト"
+    actions:
+      - action: "click"
+        selector: "customers.form.submitButton"
+        description: "空のフォームで送信を試行"
+      - action: "captureHTML"
+        id: "emptyFormValidation"
+        description: "バリデーションエラー状態を記録"
+
+  - name: "registerNewCustomer"
+    description: "新規顧客を登録"
+    actions:
+      - action: "fill"
+        selector: "customers.form.name"
+        value: "${testData.newCustomer.name}"
+      - action: "fill"
+        selector: "customers.form.email"
+        value: "${testData.newCustomer.email}"
+      - action: "click"
+        selector: "customers.form.submitButton"
+      - action: "waitForNavigation"
+
+  - name: "captureFinalCustomerList"
+    description: "登録後の顧客一覧を記録"
+    actions:
+      - action: "captureHTML"
+        id: "finalCustomerList"
+      - action: "captureDatabase"
+        id: "finalCustomers"
+        query: "SELECT * FROM customers ORDER BY id"
+
+comparisons:
+  - name: "initialCustomerListComparison"
+    description: "初期顧客一覧の現新比較"
+    type: "html"
+    source: "initialCustomerList"
+    ignorePatterns:
+      - "CUR|NEW"  # 環境名の差分は無視
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}" # タイムスタンプ差分は無視
+
+  - name: "finalCustomerListComparison"
+    description: "最終顧客一覧の現新比較"
+    type: "html"
+    source: "finalCustomerList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+  - name: "initialDatabaseComparison"
+    description: "初期データベース状態の現新比較"
+    type: "database"
+    source: "initialCustomers"
+
+  - name: "finalDatabaseComparison"
+    description: "最終データベース状態の現新比較"
+    type: "database"
+    source: "finalCustomers"
+
+  - name: "formValidationCheck"
+    description: "フォームバリデーション動作確認"
+    type: "html"
+    source: "emptyFormValidation"
+    ignorePatterns:
+      - "CUR|NEW"
+
+testData:
+  newCustomer:
+    name: "テスト 太郎 DSL"
+    email: "test_dsl@example.com"
+  credentials:
+    admin:
+      username: "admin"
+      password: "Demo2024!"

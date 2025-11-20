@@ -1,0 +1,112 @@
+name: "customer-editing-flow"
+description: "既存顧客の編集機能を網羅的にテスト（編集フォーム、更新、バリデーション）"
+
+setup:
+  - action: "resetDatabase"
+
+steps:
+  - name: "login"
+    description: "管理者でログイン"
+    actions:
+      - action: "navigate"
+        target: "/"
+      - action: "fill"
+        selector: "login.username"
+        value: "${credentials.admin.username}"
+      - action: "fill"
+        selector: "login.password"
+        value: "${credentials.admin.password}"
+      - action: "click"
+        selector: "login.loginButton"
+
+  - name: "captureOriginalData"
+    description: "編集前の顧客データを記録"
+    actions:
+      - action: "captureHTML"
+        id: "originalCustomerList"
+      - action: "captureDatabase"
+        id: "originalCustomers"
+        query: "SELECT * FROM customers WHERE id = 1"
+
+  - name: "navigateToEditForm"
+    description: "編集フォームに遷移"
+    actions:
+      - action: "click"
+        selector: "customers.list.editButton"
+        target: "first"  # 最初の編集ボタンをクリック
+      - action: "waitForNavigation"
+
+  - name: "captureEditForm"
+    description: "編集フォームの初期状態を記録"
+    actions:
+      - action: "captureHTML"
+        id: "editFormInitial"
+
+  - name: "updateCustomer"
+    description: "顧客情報を更新"
+    actions:
+      - action: "clear"
+        selector: "customers.form.name"
+      - action: "fill"
+        selector: "customers.form.name"
+        value: "${testData.updatedCustomer.name}"
+      - action: "clear"
+        selector: "customers.form.email"
+      - action: "fill"
+        selector: "customers.form.email"
+        value: "${testData.updatedCustomer.email}"
+      - action: "click"
+        selector: "customers.form.updateButton"
+      - action: "waitForNavigation"
+
+  - name: "captureUpdatedData"
+    description: "更新後のデータを記録"
+    actions:
+      - action: "captureHTML"
+        id: "updatedCustomerList"
+      - action: "captureDatabase"
+        id: "updatedCustomers"
+        query: "SELECT * FROM customers WHERE id = 1"
+
+comparisons:
+  - name: "originalCustomerComparison"
+    description: "編集前の顧客データ確認"
+    type: "database"
+    source: "originalCustomers"
+
+  - name: "updatedCustomerComparison"
+    description: "編集後の顧客データ確認"
+    type: "database"
+    source: "updatedCustomers"
+
+  - name: "originalListComparison"
+    description: "編集前一覧画面の現新比較"
+    type: "html"
+    source: "originalCustomerList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+  - name: "updatedListComparison"
+    description: "編集後一覧画面の現新比較"
+    type: "html"
+    source: "updatedCustomerList"
+    ignorePatterns:
+      - "CUR|NEW"
+      - "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+  - name: "editFormDisplay"
+    description: "編集フォーム表示確認"
+    type: "html"
+    source: "editFormInitial"
+    ignorePatterns:
+      - "CUR|NEW"
+
+testData:
+  updatedCustomer:
+    name: "更新された 太郎"
+    email: "updated_taro@example.com"
+  credentials:
+    admin:
+      username: "admin"
+      password: "Demo2024!"
